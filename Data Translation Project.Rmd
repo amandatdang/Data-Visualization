@@ -1,0 +1,129 @@
+---
+title: "Data Translation Project"
+author: "Amanda Dang"
+date: "6/10/2022"
+output: html_document
+---
+
+
+```{r}
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+load('king_dailyvisits_load.Rdata')
+dv %>%
+  arrange(brands, naics_title, date) %>%
+  tail()
+
+dv <- dv %>% mutate(naics_two_digit = floor(naics_code/10000)) 
+dv <- dv %>% mutate(naics_four_digit = floor(naics_code/100))
+dv$weekday <- wday(dv$date, label=TRUE)
+
+load('king_originvisits_load.Rdata')
+ov %>%
+  select(GEOID, naics_code, naics_title, brands, visits) %>%
+  filter(brands != '') %>%
+  head()
+
+load('neighborhood_names.Rdata')
+ov %>%
+  right_join(neighborhood_names) %>%
+  tail()
+```
+
+```{r}
+dv %>% 
+  group_by(naics_title) %>%
+  summarise(Total_Visits = sum(visits_by_day)) %>%
+  arrange(desc(Total_Visits)) %>% head(10)
+```
+
+Because there was a blank brand, it was dropped from the bar plot so we could see how the top 10 brands compared to each other. 
+
+```{r}
+dv %>% 
+  group_by(brands) %>%
+  summarise(Total_Visits = sum(visits_by_day)) %>%
+  arrange(desc(Total_Visits)) %>% head(10)
+
+ggplot(dv %>% 
+  group_by(brands) %>%
+  summarise(Total_Visits = sum(visits_by_day)) %>%
+  arrange(desc(Total_Visits)) %>% slice(2:11), aes(x = reorder(brands,-Total_Visits), y = Total_Visits)) + 
+  stat_summary(geom = 'bar', 
+               fun = sum) + 
+  labs(x = 'Brand', y = 'Total Visits (July 2020)', title = 'Total Visits by Brand') + theme(axis.text.x=element_text(angle = 45, hjust = 1))
+ options(scipen=999)
+```
+
+To begin, I wanted to see what brands had the highest total visits in July 2020. This gives us a snapshot of the ones that we can further explore. Moving forward, I wanted to look closer at Costco because unlike the other brands in this graph, Costco is the only one that is completely closed on July 4th.
+
+```{r}
+costco <- dv %>%
+  filter(brands == "Costco Wholesale Corp.")%>%
+  mutate(day= day(date))
+
+ggplot(costco, aes(x=day, y=visits_by_day)) +
+  geom_line() +
+  labs(title = "Costco Visits By Day",
+       y = "Visits", x = "Day")
+```
+
+For my next visualization, I wanted to see what the spread of visits looked like throughout the entire month. As I previously mentioned, Costco is closed on July 4th, explaining the sudden drastic dip in our graph. 
+
+```{r}
+ggplot(costco, aes(x=weekday, y=visits_by_day)) + 
+  stat_summary(geom = 'bar', 
+               fun = mean) + 
+  labs(x = "Weekday", y = "Visits", title = 'Total Visits By Day Of The Week')
+```
+
+Taking a closer look at the specific days of the week, we can see how the number of visits vary. However, when looking at the data, we can see that it shows 17 visits on the 4th, but we know that they were closed. This is likely an error in the data or some of the warehouse employees may have possibly been working. For my next bar plot, I will be correcting this.
+
+```{r}
+costco <- costco %>% filter(day != 4)
+ggplot(costco, aes(x=weekday, y=visits_by_day)) + 
+  stat_summary(geom = 'bar', 
+               fun = mean) +
+   labs(x = "Weekday", y = "Visits", title = 'Total Visits By Day Of The Week')
+```
+
+In this new bar plot, I removed the holiday so we will be looking at the average number of visitors per day. From this, we can see that Friday is by far the busiest day of the week to go to Costco, while Tuesday is the least busy day. Knowing this, if you wanted to avoid the crazy parking and lines at check-out, you would want to visit Costco on Tuesdays.
+
+```{r}
+ov %>%
+  right_join(neighborhood_names) %>%
+  tail()
+```
+
+Now, I wanted to see what brands people are visiting through their phones if I were to live in the Northwest. 
+
+```{r}
+nw <- ov %>%
+  right_join(neighborhood_names) %>%
+  filter(NEIGHBORHOOD_DISTRICT_NAME == "Northwest") %>%
+  group_by(naics_title) %>%
+  summarise(visits=sum(visits)) %>%
+  arrange(desc(visits))
+nw
+```
+
+Unlike the larger population, the top category for people living in the Northwest is Full service restaurants followed by snack bars such as Starbucks. 
+
+```{r}
+nw <- ov %>%
+  right_join(neighborhood_names) %>%
+  filter(NEIGHBORHOOD_DISTRICT_NAME == "Northwest") %>%
+  group_by(brands) %>%
+  summarise(visits=sum(visits)) %>%
+  arrange(desc(visits))
+
+ggplot(nw %>% slice(2:11),
+       aes(x = reorder(brands,-visits), y = visits)) + 
+  stat_summary(geom = 'bar', 
+               fun = sum) + 
+  labs(x = 'Brand', y = 'Total Visits (July 2020)', title = 'Total Visitors by Brand') + theme(axis.text.x=element_text(angle = 45, hjust = 1))
+
+```
+
+The top 10 brands are similar to the ones we discovered for the overall Seattle area, however, the order is just different. In the overall Seattle area, Costco was one of the most phone visited brands through, however, in the Northwest, it is closer to the middle. We can see that people will typically visit the same brands no matter their location because they are staples to everyday life. 

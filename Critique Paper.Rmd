@@ -1,0 +1,24 @@
+---
+title: "Critique Paper"
+author: "Amanda Dang"
+date: '2022-04-24'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+![Old Visualization](CritiquePaperImage.png) 
+This visualization is trying to provide the demographic breakdown of COVID-19 cases in King County, showing that 20-29 year old white females have been infected the most. I think that it does a good job of conveying this story, however, there are some things that I do believe should be revised to improve the clarity of the story.
+
+In my opinion, I don't believe the visualization is misleading. I think that looking at certain aspects, for instance, the orientation of the graph so that the titles are written out along the sides of the bars, align with what we have been taught, however, in other aspects, it does not, which is why it needs to be improved.
+
+Looking at the visualization overall, it is decently organized and you can see where the information lies. You can tell right off the bat which trait in each demographic group has the highest rate of infection and it does provide the actual number and percentage. Additionally, we can see that the groups are clear, as they have each one in a different color, making each easily visible.
+
+As we discussed in class, we need to make our visualizations clear so that if someone who does not know about the topic at hand were to see it, they would still be able to clearly decipher what the story is. Immediately, what I noticed was that in the race/ethnicity group, was that there were two groups, one labeled "AI/AN" and the other labeled "NHPI". Realistically, I didn't know what those two groups are and I think that others would not know as well and would have to look it up on their own time. It might be longer to write it out, but since it is important to include that statistic, it would be more beneficial for us to write it out. Along with that, it's great that they have the numbers and percentages next to each bar, however, it looks cluttered when you first look at it. For that reason, I think that by removing the actual number of people affected and keeping the percentage, it would improve the visualization. That way, the graph is not cluttered by numbers and you can moreso compare how these groups fall against each other. Personally, that would be more important to see because if I have the breakdown, I could calculate the actual numbers if I really needed to, but this story is more so a general comparison. The other thing to be improved would be the titles. The title "Percentages" is at the top, yet, the numerical values are located at the bottom. These should be on top of each other instead of being separated. There is also one bar labeled "All" giving the information on how many people are included in this visualization (this was 100%), which in my opinion, is not necessary. If they wanted to add how many people were included in this graph, they could always add it under the percentage title or in the overall title. At first, when I saw that single bar, it confused me because I didn't know exactly what it was for, so I think removing it would improve the visualization overall. Lastly, I think that each of these demographic groups should be separated into their own visualization. I understand that they might want to have everything to give the general demographic that has been impacted most, but I think there needs to be more separation.
+
+Overall, these improvements would help to make the visualization clearer and straightforward. My new visualization is more user friendly for anyone to see, and I think that is an important part of data visualization, as we have discussed in class. Especially with such an important topic, we want readers to understand the story we are coming across, and these improvements do that because it removes any unnecessary information.
+
+![New Visualization](NewVisualization.jpg)
+
